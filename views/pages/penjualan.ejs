@@ -1,0 +1,206 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Penjualan</h1>
+    <a href="#" class="btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addModal">
+      <i class="fas fa-plus fa-sm text-white-50"></i>Tambah Data <i class="ri-travesti-line"></i>
+    </a>
+  </div>
+
+  <% if(msg.length !== 0){ %>
+  <div class="alert alert-success">
+    <%= msg %>
+  </div>
+  <%}  %>
+
+  <% if(warning.length !== 0){ %>
+  <div class="alert alert-danger">
+    <%= warning %>
+  </div>
+  <%}  %>
+  <div class="row">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Tgl Faktur</th>
+              <th>No Faktur</th>
+              <th>Nama Konsumen</th>
+              <th>Kode Barang</th>
+              <th>Jumlah</th>
+              <th>Harga Satuan</th>
+              <th>Harga Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(dataPenjualan.length <1) {%>
+            <tr>
+              <td colspan="9" class="text-center">Data Kosong</td>
+            </tr>
+            <% } %>
+
+            <% let i=1;
+            const d = new Date()
+             dataPenjualan.forEach(data=>{ %>
+            <tr>
+              <td>No. <%=i++%></td>
+              <td><%=data.tgl_faktur.toLocaleString().split(',')[0] %></td>
+              <td><%=data.no_faktur%></td>
+              <td><%=data.nama_konsumen%></td>
+              <td><%=data.kode_barang%></td>
+              <td><%=data.jumlah%></td>
+              <td><%=data.harga_satuan%></td>
+              <td><%=data.harga_total%></td>
+              <td>
+                <a href="#" class="btn btn-info" data-toggle="modal" data-target="#editModalPenjualan"
+                  data-item="<%=JSON.stringify(data)%>"><i class="fa fa-pencil-alt"></i></a>
+                <form action="/penjualan?_method=DELETE" method="post" class="d-inline">
+                  <input type="hidden" name="id" value="<%=data.id%>">
+                  <button class="btn btn-danger" onclick="confirm('Hapus Data?')"><i class="fa fa-trash"></i></button>
+                </form>
+              </td>
+
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+
+
+<!-- Modal Add -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tambah Data Penjualan</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/penjualan" method="POST">
+          <div class="form-group mb-3">
+            <label for="tgl_faktur">Tgl Faktur </label>
+            <input type="date" class="form-control" id="tgl_faktur" name="tgl_faktur" placeholder="tgl faktur" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="no_faktur">No Faktur </label>
+            <input type="text" class="form-control" id="no_faktur" name="no_faktur" placeholder="no faktur" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="nama_konsumen">Nama Konsumen </label>
+            <input type="text" class="form-control" id="nama_konsumen" name="nama_konsumen" placeholder="nama konsumen"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="kode_barang">Kode Barang</label>
+            <select class="form-control" id="kode_barang" name="kode_barang">
+              <% dataBarang.forEach((data)=>{ %>
+              <option value="<%=data.kode_barang%>">kode : <%= data.kode_barang %>. <%=data.nama_barang%>
+              </option>
+              <% })%>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="jumlah">Jumlah </label>
+            <input type="text" class="form-control" id="jumlah" name="jumlah" placeholder="jumlah" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="harga_satuan">Harga Satuan </label>
+            <input type="text" class="form-control" id="harga_satuan" name="harga_satuan" placeholder="harga satuan"
+              required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="harga_total">Harga Total </label>
+            <input type="text" class="form-control" id="harga_total" name="harga_total" placeholder="harga total"
+              required>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal edit -->
+<div class="modal fade" id="editModalPenjualan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Data Penjualan</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/penjualan?_method=PUT">
+          <input type="hidden" name="id" id="id">
+
+          <div class="form-group mb-3">
+            <label for="edit_tgl_faktur">Tgl Faktur </label>
+            <input type="date" class="form-control" id="edit_tgl_faktur" name="tgl_faktur" placeholder="tgl faktur" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="edit_no_faktur">No Faktur </label>
+            <input type="text" class="form-control" id="edit_no_faktur" name="no_faktur" placeholder="no faktur" required>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="edit_nama_konsumen">Nama Konsumen </label>
+            <input type="text" class="form-control" id="edit_nama_konsumen" name="nama_konsumen" placeholder="nama konsumen"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="edit_kode_barang">Kode Barang</label>
+            <select class="form-control" id="edit_kode_barang" name="kode_barang">
+              <% dataBarang.forEach((data)=>{ %>
+              <option value="<%=data.kode_barang%>">kode : <%= data.kode_barang %>. <%=data.nama_barang%>
+              </option>
+              <% })%>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="edit_jumlah">Jumlah </label>
+            <input type="text" class="form-control" id="edit_jumlah" name="jumlah" placeholder="jumlah" required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="edit_harga_satuan">Harga Satuan </label>
+            <input type="text" class="form-control" id="edit_harga_satuan" name="harga_satuan" placeholder="harga satuan"
+              required>
+          </div>
+          <div class="form-group mb-3">
+            <label for="edit_harga_total">Harga Total </label>
+            <input type="text" class="form-control" id="edit_harga_total" name="harga_total" placeholder="harga total"
+              required>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 
